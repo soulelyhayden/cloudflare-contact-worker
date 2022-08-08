@@ -1,0 +1,14 @@
+name = "contact-form"
+type = "javascript"
+main = "./index.js"
+account_id = "183a5de6cf3d07598df8463257c6b4ef"
+workers_dev = false
+route = "contact.haydensoule.com/*"
+zone_id = "a5a97f5ab9f8cb00ce3911d25a104676"
+compatibility_date = "2022-08-08"
+
+
+[vars]
+# The necessary secrets are:
+# - MAILGUN_API_KEY
+# - RECAPTCHA_SECRET_KEY
