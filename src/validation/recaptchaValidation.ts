@@ -18,9 +18,9 @@ export async function recaptchaValidation(token: string, ip: string) {
 		}
 
 		console.log("Recaptcha error", json)
-		return JSONResponse("reCAPTCHA failed", 400)
+		return JSONResponse("reCAPTCHA failed. If this error continues you can reach me by email.", 400)
 	} catch (err) {
 		console.log("Fetch error", err)
-		return JSONResponse("Oops! Something went wrong.", 400)
+		return JSONResponse("Oops! Something went wrong. Try again later.", 400)
 	}
 }
