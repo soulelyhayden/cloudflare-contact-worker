@@ -38,15 +38,15 @@ export async function sendMessage(form: any) {
 	}
 
 	try {
-		// await fetch(`https://api.mailgun.net/v3/${config.mailgun_domain}/messages`, {
-		// 	method: "POST",
-		// 	headers: {
-		// 		"Authorization": "Basic " + btoa("api:" + config.mailgun_key),
-		// 		"Content-Type": "application/x-www-form-urlencoded",
-		// 		"Content-Length": (String)(Object.keys(data).length)
-		// 	},
-		// 	body: urlfy(data)
-		// })
+		await fetch(`https://api.mailgun.net/v3/${config.mailgun_domain}/messages`, {
+			method: "POST",
+			headers: {
+				"Authorization": "Basic " + btoa("api:" + config.mailgun_key),
+				"Content-Type": "application/x-www-form-urlencoded",
+				"Content-Length": (String)(Object.keys(data).length)
+			},
+			body: urlfy(data)
+		})
 
 		return JSONResponse(form.successMessage)
 	} catch (err) {
