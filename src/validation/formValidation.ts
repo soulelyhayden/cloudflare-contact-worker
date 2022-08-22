@@ -27,10 +27,10 @@ export async function formValidation(form: any, ip: string) {
 		return JSONResponse("Please enter a valid email address.", 400)
 	}
 
-	let recaptchaError = await recaptchaValidation(form['token'], ip)
-	if (recaptchaError) {
-		return recaptchaError;
-	}
+	// let recaptchaError = await recaptchaValidation(form['token'], ip)
+	// if (recaptchaError) {
+	// 	return recaptchaError;
+	// }
 
 	return false;
 }

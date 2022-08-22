@@ -1,4 +1,4 @@
-# 📇 `contact-form-worker`
+# 📇 `personal-cloudflare-contact-worker`
 
 A basic worker to receive POSTs from a contact form and send an email via an API.
 

@@ -1,11 +1,8 @@
 import { JSONResponse } from "../utilities/JSONResponse"
-import { urlfy } from "../utilities/urlfy"
+const MailazyClient = require('mailazy-node');
 
-const config = {
-	from: "no-reply <no-reply@haydensoule.com>",
-	mailgun_domain: "mail.haydensoule.com",
-	mailgun_key: process.env.MAILGUN_API_KEY
-}
+
+const client = new MailazyClient({ accessKey: process.env.MAILAZY_ACCESS_KEY, accessSecret: process.env.MAILAZY_SECRET_KEY });
 
 /**
  * Send the message to MailGun
@@ -13,6 +10,7 @@ const config = {
  * @param {JSON} form 
  */
 export async function sendMessage(form: any) {
+
 	const template = `
     <html>
     <head>
@@ -30,27 +28,20 @@ export async function sendMessage(form: any) {
     `
 
 	const data = {
-		from: config.from,
-		to: form.receiveMail,
+		from: 'no-reply@svey.xyz',
+		to: form.receiver,
 		subject: `New message from ${form.name}`,
+		text: form.message,
 		html: template,
 		"h:Reply-To": form.email // reply to user
 	}
 
 	try {
-		await fetch(`https://api.mailgun.net/v3/${config.mailgun_domain}/messages`, {
-			method: "POST",
-			headers: {
-				"Authorization": "Basic " + btoa("api:" + config.mailgun_key),
-				"Content-Type": "application/x-www-form-urlencoded",
-				"Content-Length": (String)(Object.keys(data).length)
-			},
-			body: urlfy(data)
-		})
-
+		const resp = await client.send(data);
+		console.log("resp: " + resp);
 		return JSONResponse(form.successMessage)
-	} catch (err) {
-		console.log("Fetch error", err)
+	} catch (e) {
+		console.log("errror: " + e);
 		return JSONResponse("Oops! Something went wrong.", 400)
 	}
 }
