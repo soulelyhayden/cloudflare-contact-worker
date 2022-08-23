@@ -12,7 +12,8 @@ module.exports = {
 		path: path.join(__dirname, '../dist'),
 	},
 	plugins: [
-		new Dotenv({ path: path.join(__dirname, './config.env' )})
+		// new NodePolyfillPlugin(),
+		new Dotenv({ path: path.join(__dirname, './config.env' )}),
 	],
 	// devtool: 'eval-cheap-module-source-map',
 	watchOptions: {

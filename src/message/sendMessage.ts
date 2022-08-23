@@ -1,8 +1,4 @@
 import { JSONResponse } from "../utilities/JSONResponse"
-const MailazyClient = require('mailazy-node');
-
-
-const client = new MailazyClient({ accessKey: process.env.MAILAZY_ACCESS_KEY, accessSecret: process.env.MAILAZY_SECRET_KEY });
 
 /**
  * Send the message to MailGun
@@ -10,38 +6,53 @@ const client = new MailazyClient({ accessKey: process.env.MAILAZY_ACCESS_KEY, ac
  * @param {JSON} form 
  */
 export async function sendMessage(form: any) {
+	let websiteName = 'svey.xyz';
 
-	const template = `
-    <html>
-    <head>
-        <title>New message from ${form.name}</title>
-    </head>
-    <body>
-    New message has been sent via website.<br><br>
-    <b>Name:</b> ${form.name} <br>
-    <b>Email:</b> ${form.email} <br>
-    <br>
-    <b>Message:</b><br>
-    ${form.message.replace(/(?:\r\n|\r|\n)/g, "<br>")}
-    </body>
-    </html>
-    `
+	let websiteURL = 'svey.xyz'
+	form.title = 'contact-form'
 
 	const data = {
-		from: 'no-reply@svey.xyz',
+		receiverName: 'svey',
+		senderName: form.name,
+		from: `no-reply-${form.title}@${websiteURL}`,
 		to: form.receiver,
-		subject: `New message from ${form.name}`,
-		text: form.message,
-		html: template,
-		"h:Reply-To": form.email // reply to user
+		replyTo: form.email,
+		subject: `New Submission on ${websiteName}, through ${form.title}`,
+		message: form.message,
+		// "h:Reply-To": form.email // reply to user
 	}
 
+	const request = new Request('https://api.mailchannels.net/tx/v1/send', {
+		method: 'POST',
+		headers: {
+			'content-type': 'application/json',
+		},
+		body: JSON.stringify({
+			personalizations: [
+				{
+					to: [{ email: data.to, name: data.receiverName }],
+					reply_to: { email: data.replyTo, name: data.senderName },
+				},
+			],
+			from: {
+				email: data.from,
+				name: data.senderName,
+			},
+			subject: data.subject,
+			content: [
+				{
+					type: 'text/plain',
+					value: data.message,
+				},
+			],
+		}),
+	})
+
 	try {
-		const resp = await client.send(data);
-		console.log("resp: " + resp);
-		return JSONResponse(form.successMessage)
+		let response = await fetch(request);
+		
+		return JSONResponse(response!.statusText)
 	} catch (e) {
-		console.log("errror: " + e);
 		return JSONResponse("Oops! Something went wrong.", 400)
 	}
 }
